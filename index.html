@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AD-HD — Live classrooms built for ADHD minds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #0e0e0c;
+  --ink2: #3a3a35;
+  --ink3: #7a7a70;
+  --paper: #f5f3ee;
+  --paper2: #eceae3;
+  --paper3: #e2dfd6;
+  --lime: #c8f542;
+  --lime-dark: #8db82e;
+  --accent: #1a1a18;
+  --radius: 12px;
+  --radius-lg: 20px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Geist', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── GRAIN OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 1000; opacity: 0.5;
+}
+
+/* ── NAV ── */
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 48px;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(245,243,238,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(14,14,12,0.07);
+}
+.nav-logo {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px; color: var(--ink); letter-spacing: -0.02em;
+}
+.nav-logo em { font-style: italic; color: var(--ink3); }
+.nav-cta {
+  background: var(--ink); color: var(--paper);
+  border: none; padding: 10px 22px; border-radius: 100px;
+  font-size: 14px; font-weight: 500; font-family: inherit;
+  cursor: pointer; transition: all 0.2s; text-decoration: none;
+  display: inline-flex; align-items: center;
+}
+.nav-cta:hover { background: var(--ink2); transform: translateY(-1px); }
+
+/* ── HERO ── */
+.hero {
+  padding: 160px 48px 100px;
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 420px; gap: 60px;
+  align-items: center;
+}
+.hero-eyebrow {
+  font-size: 12px; font-weight: 500; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink3);
+  margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+}
+.eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--lime-dark); }
+.hero-h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(44px, 5.5vw, 68px);
+  line-height: 1.05; letter-spacing: -0.025em;
+  color: var(--ink); margin-bottom: 24px;
+}
+.hero-h1 em { font-style: italic; color: var(--ink3); }
+.hero-h1 .lime-word {
+  display: inline-block;
+  background: var(--lime); color: var(--ink);
+  padding: 0 10px 4px; border-radius: 8px;
+  font-style: normal; line-height: 1.1;
+}
+.hero-sub {
+  font-size: 17px; color: var(--ink2); line-height: 1.65;
+  margin-bottom: 36px; max-width: 480px;
+}
+.hero-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--ink); color: var(--paper);
+  border: none; padding: 14px 28px; border-radius: 100px;
+  font-size: 15px; font-weight: 500; font-family: inherit;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-primary:hover { background: var(--ink2); transform: translateY(-2px); }
+.btn-ghost {
+  background: transparent; color: var(--ink2);
+  border: 1px solid var(--paper3); padding: 14px 28px; border-radius: 100px;
+  font-size: 15px; font-weight: 400; font-family: inherit;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: var(--ink3); background: var(--paper2); }
+.hero-social { margin-top: 28px; font-size: 13px; color: var(--ink3); display: flex; align-items: center; gap: 8px; }
+.hero-avatars { display: flex; }
+.h-av {
+  width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--paper);
+  background: var(--paper2); display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 500; margin-left: -8px; color: var(--ink2);
+}
+.h-av:first-child { margin-left: 0; }
+.ha1 { background: #d4e9ff; color: #1a4a7a; }
+.ha2 { background: #d4f5e1; color: #1a5a32; }
+.ha3 { background: #fde8d4; color: #7a3a12; }
+.ha4 { background: #ede4ff; color: #4a2a8a; }
+
+/* ── HERO CARD ── */
+.hero-card {
+  background: var(--ink); border-radius: var(--radius-lg);
+  padding: 28px; color: var(--paper);
+  animation: float 6s ease-in-out infinite;
+  position: relative; overflow: hidden;
+}
+.hero-card::before {
+  content: ''; position: absolute; top: -40px; right: -40px;
+  width: 160px; height: 160px; border-radius: 50%;
+  background: var(--lime); opacity: 0.12;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.hc-label { font-size: 11px; color: rgba(245,243,238,0.45); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+.hc-live-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.hc-session { font-family: 'Instrument Serif', serif; font-size: 20px; margin-bottom: 6px; }
+.hc-meta { font-size: 12px; color: rgba(245,243,238,0.5); margin-bottom: 20px; }
+.hc-peers { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+.hc-peer-avs { display: flex; }
+.hc-av {
+  width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--ink);
+  font-size: 9px; font-weight: 500; display: flex; align-items: center; justify-content: center;
+  margin-left: -6px; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8);
+}
+.hc-av:first-child { margin-left: 0; }
+.hc-peer-count { font-size: 12px; color: rgba(245,243,238,0.55); }
+.hc-nudge {
+  background: rgba(255,255,255,0.07); border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 10px; border-left: 2px solid var(--lime);
+}
+.hc-nudge-label { font-size: 10px; color: var(--lime); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.hc-nudge-text { font-size: 13px; color: rgba(245,243,238,0.8); line-height: 1.5; }
+.hc-cp {
+  background: rgba(255,255,255,0.05); border-radius: 10px;
+  padding: 12px 14px; border: 1px solid rgba(255,255,255,0.08);
+}
+.hc-cp-q { font-size: 12px; color: rgba(245,243,238,0.7); margin-bottom: 10px; }
+.hc-cp-btns { display: flex; gap: 6px; }
+.hc-cp-btn {
+  font-size: 11px; padding: 5px 12px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15); background: transparent;
+  color: rgba(245,243,238,0.6); font-family: inherit; cursor: default;
+}
+.hc-cp-btn.active { background: var(--lime); color: var(--ink); border-color: transparent; font-weight: 500; }
+
+/* ── SECTION SHARED ── */
+section { padding: 80px 48px; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-tag {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink3); margin-bottom: 14px;
+}
+.section-h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(32px, 4vw, 52px); line-height: 1.1;
+  letter-spacing: -0.02em; color: var(--ink); margin-bottom: 16px;
+}
+.section-h2 em { font-style: italic; color: var(--ink3); }
+.section-sub { font-size: 17px; color: var(--ink2); line-height: 1.65; max-width: 560px; }
+
+/* ── HOW IT WORKS ── */
+.how-bg { background: var(--ink); border-radius: 28px; margin: 0 32px; overflow: hidden; }
+.how-inner { max-width: 1100px; margin: 0 auto; padding: 80px 48px; }
+.how-inner .section-tag { color: rgba(245,243,238,0.4); }
+.how-inner .section-h2 { color: var(--paper); }
+.how-inner .section-h2 em { color: rgba(245,243,238,0.4); }
+.how-inner .section-sub { color: rgba(245,243,238,0.6); }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 52px; }
+.step {
+  background: rgba(255,255,255,0.04); border-radius: 16px;
+  padding: 32px 28px; position: relative; overflow: hidden;
+  transition: background 0.2s;
+}
+.step:hover { background: rgba(255,255,255,0.07); }
+.step-num {
+  font-family: 'Instrument Serif', serif; font-size: 56px;
+  color: rgba(245,243,238,0.08); position: absolute;
+  top: 16px; right: 20px; line-height: 1; font-weight: 400;
+}
+.step-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--lime); display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+}
+.step-icon svg { width: 22px; height: 22px; }
+.step-title { font-size: 17px; font-weight: 500; color: var(--paper); margin-bottom: 10px; }
+.step-desc { font-size: 14px; color: rgba(245,243,238,0.55); line-height: 1.6; }
+
+/* ── FEATURES ── */
+.features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 52px; }
+.feat-card {
+  background: var(--paper2); border-radius: var(--radius-lg);
+  padding: 28px; border: 1px solid var(--paper3);
+  transition: all 0.2s;
+}
+.feat-card:hover { background: var(--paper); border-color: var(--paper3); transform: translateY(-2px); }
+.feat-card.wide { grid-column: span 2; }
+.feat-icon { font-size: 28px; margin-bottom: 14px; }
+.feat-title { font-size: 17px; font-weight: 500; color: var(--ink); margin-bottom: 8px; }
+.feat-desc { font-size: 14px; color: var(--ink3); line-height: 1.65; }
+.feat-tag {
+  display: inline-block; margin-top: 12px;
+  font-size: 11px; padding: 3px 10px; border-radius: 20px;
+  background: var(--lime); color: var(--ink); font-weight: 500;
+}
+
+/* ── WHO IT'S FOR ── */
+.who-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 48px; }
+.who-card {
+  background: var(--paper2); border-radius: var(--radius-lg);
+  padding: 28px; border: 1px solid var(--paper3);
+}
+.who-role {
+  font-size: 12px; font-weight: 500; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--ink3); margin-bottom: 10px;
+}
+.who-quote {
+  font-family: 'Instrument Serif', serif; font-size: 19px;
+  line-height: 1.4; color: var(--ink); margin-bottom: 12px;
+  font-style: italic;
+}
+.who-name { font-size: 13px; color: var(--ink3); }
+
+/* ── WAITLIST / CTA ── */
+.cta-section {
+  background: var(--lime); border-radius: 28px; margin: 0 32px 80px;
+  padding: 80px 64px; text-align: center; position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%);
+  width: 400px; height: 400px; border-radius: 50%;
+  background: rgba(14,14,12,0.06); pointer-events: none;
+}
+.cta-tag { font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink2); margin-bottom: 16px; }
+.cta-h2 {
+  font-family: 'Instrument Serif', serif; font-size: clamp(36px, 5vw, 60px);
+  line-height: 1.08; letter-spacing: -0.025em; color: var(--ink); margin-bottom: 16px;
+}
+.cta-h2 em { font-style: italic; opacity: 0.55; }
+.cta-sub { font-size: 17px; color: var(--ink2); max-width: 480px; margin: 0 auto 40px; line-height: 1.6; }
+.waitlist-form { display: flex; gap: 10px; max-width: 480px; margin: 0 auto 16px; flex-wrap: wrap; justify-content: center; }
+.wl-input {
+  flex: 1; min-width: 200px; padding: 14px 20px; border-radius: 100px;
+  border: 2px solid rgba(14,14,12,0.15); background: rgba(255,255,255,0.65);
+  font-size: 15px; font-family: inherit; color: var(--ink); outline: none;
+  transition: all 0.2s; backdrop-filter: blur(4px);
+}
+.wl-input::placeholder { color: var(--ink3); }
+.wl-input:focus { border-color: var(--ink); background: white; }
+.wl-select {
+  flex: 1; min-width: 160px; padding: 14px 20px; border-radius: 100px;
+  border: 2px solid rgba(14,14,12,0.15); background: rgba(255,255,255,0.65);
+  font-size: 15px; font-family: inherit; color: var(--ink); outline: none;
+  cursor: pointer; appearance: none; transition: all 0.2s;
+}
+.wl-select:focus { border-color: var(--ink); }
+.wl-btn {
+  padding: 14px 28px; border-radius: 100px;
+  background: var(--ink); color: var(--lime);
+  border: none; font-size: 15px; font-weight: 500;
+  font-family: inherit; cursor: pointer; transition: all 0.2s;
+  white-space: nowrap;
+}
+.wl-btn:hover { background: var(--ink2); transform: translateY(-2px); }
+.wl-btn:active { transform: scale(0.97); }
+.cta-note { font-size: 13px; color: var(--ink2); opacity: 0.7; }
+.cta-note a { color: var(--ink); }
+.success-msg { display: none; text-align: center; padding: 12px; }
+.success-msg h3 { font-family: 'Instrument Serif', serif; font-size: 24px; margin-bottom: 8px; }
+.success-msg p { font-size: 14px; color: var(--ink2); }
+
+/* ── DEMO STRIP ── */
+.demo-strip { background: var(--paper2); border-top: 1px solid var(--paper3); border-bottom: 1px solid var(--paper3); padding: 32px 48px; }
+.demo-strip-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.demo-strip h3 { font-family: 'Instrument Serif', serif; font-size: 24px; }
+.demo-strip p { font-size: 14px; color: var(--ink3); margin-top: 4px; }
+.demo-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.demo-btn-create {
+  background: var(--ink); color: var(--paper); padding: 12px 22px;
+  border: none; border-radius: 100px; font-size: 14px; font-weight: 500;
+  font-family: inherit; cursor: pointer; transition: all 0.2s;
+}
+.demo-btn-create:hover { background: var(--ink2); }
+.demo-btn-join {
+  background: transparent; color: var(--ink); padding: 12px 22px;
+  border: 1px solid var(--paper3); border-radius: 100px; font-size: 14px;
+  font-family: inherit; cursor: pointer; transition: all 0.2s;
+}
+.demo-btn-join:hover { border-color: var(--ink3); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(14,14,12,0.5); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--paper); border-radius: var(--radius-lg);
+  padding: 36px; width: 440px; max-width: 100%;
+  animation: modal-in 0.25s ease;
+  border: 1px solid var(--paper3);
+}
+@keyframes modal-in { from{transform:translateY(16px) scale(0.97);opacity:0} to{transform:none;opacity:1} }
+.modal-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; }
+.modal-title { font-family: 'Instrument Serif', serif; font-size: 26px; color: var(--ink); }
+.modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--ink3); line-height: 1; padding: 2px; }
+.modal-close:hover { color: var(--ink); }
+.modal-label { font-size: 12px; font-weight: 500; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.modal-input {
+  width: 100%; padding: 12px 16px; border-radius: var(--radius);
+  border: 1px solid var(--paper3); background: white;
+  font-size: 15px; font-family: inherit; color: var(--ink); outline: none;
+  margin-bottom: 16px; transition: border-color 0.15s;
+}
+.modal-input:focus { border-color: var(--ink); }
+.modal-hint { font-size: 12px; color: var(--ink3); margin-top: -10px; margin-bottom: 16px; }
+.modal-btn {
+  width: 100%; padding: 13px; border-radius: var(--radius);
+  border: none; background: var(--ink); color: var(--paper);
+  font-size: 15px; font-weight: 500; font-family: inherit; cursor: pointer;
+  transition: all 0.15s; margin-top: 4px;
+}
+.modal-btn:hover { background: var(--ink2); }
+.modal-btn.secondary {
+  background: transparent; border: 1px solid var(--paper3);
+  color: var(--ink); margin-top: 8px;
+}
+.modal-btn.secondary:hover { background: var(--paper2); }
+.modal-divider { text-align: center; font-size: 13px; color: var(--ink3); margin: 16px 0; }
+.code-display {
+  background: var(--ink); color: var(--lime);
+  border-radius: var(--radius); padding: 20px 24px; text-align: center;
+  margin: 16px 0; font-family: 'Geist', monospace; font-size: 36px;
+  letter-spacing: 0.15em; font-weight: 500;
+}
+.code-sub { font-size: 13px; color: var(--ink3); text-align: center; margin-bottom: 16px; }
+.modal-step { display: none; }
+.modal-step.active { display: block; }
+
+/* ── FOOTER ── */
+footer {
+  padding: 40px 48px; border-top: 1px solid var(--paper3);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-logo { font-family: 'Instrument Serif', serif; font-size: 18px; color: var(--ink2); }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-size: 13px; color: var(--ink3); text-decoration: none; }
+.footer-links a:hover { color: var(--ink); }
+.footer-note { font-size: 13px; color: var(--ink3); }
+
+/* ── ANIMATIONS ── */
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-up.visible { opacity: 1; transform: none; }
+.fade-up-d1 { transition-delay: 0.1s; }
+.fade-up-d2 { transition-delay: 0.2s; }
+.fade-up-d3 { transition-delay: 0.3s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding: 14px 20px; }
+  .hero { grid-template-columns: 1fr; padding: 120px 24px 60px; gap: 40px; }
+  .hero-card { max-width: 420px; }
+  section { padding: 60px 24px; }
+  .how-bg, .cta-section { margin: 0 16px; }
+  .how-inner { padding: 52px 28px; }
+  .cta-section { padding: 52px 28px; }
+  .steps { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .feat-card.wide { grid-column: span 1; }
+  .who-grid { grid-template-columns: 1fr; }
+  .demo-strip { padding: 24px; }
+  footer { padding: 28px 24px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">AD-<em>HD</em></div>
+  <a class="nav-cta" href="#waitlist">Join the waitlist</a>
+</nav>
+
+<section style="padding: 0;">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow fade-up"><div class="eyebrow-dot"></div> Built for ADHD students · Early access</div>
+      <h1 class="hero-h1 fade-up fade-up-d1">
+        Live classrooms that <span class="lime-word">keep you</span><br>
+        <em>actually</em> present.
+      </h1>
+      <p class="hero-sub fade-up fade-up-d2">
+        AD-HD lets teachers create live sessions and students join them — with shared notes, clarity checkpoints, and gentle focus nudges that sustain attention without becoming a distraction.
+      </p>
+      <div class="hero-actions fade-up fade-up-d3">
+        <button class="btn-primary" onclick="openModal('create')">Create a class</button>
+        <button class="btn-ghost" onclick="openModal('join')">Join with a code</button>
+      </div>
+      <div class="hero-social fade-up">
+        <div class="hero-avatars">
+          <div class="h-av ha1">AX</div>
+          <div class="h-av ha2">SM</div>
+          <div class="h-av ha3">JO</div>
+          <div class="h-av ha4">+</div>
+        </div>
+        <span>12 educators joined this week</span>
+      </div>
+    </div>
+
+    <div class="hero-card fade-up fade-up-d2">
+      <div class="hc-label"><div class="hc-live-dot"></div> Live session</div>
+      <div class="hc-session">Biology 101 — Cell Transport</div>
+      <div class="hc-meta">Prof. Fagot · 23 students · 42 min in</div>
+      <div class="hc-peers">
+        <div class="hc-peer-avs">
+          <div class="hc-av">AX</div>
+          <div class="hc-av">SM</div>
+          <div class="hc-av">JO</div>
+          <div class="hc-av">+</div>
+        </div>
+        <span class="hc-peer-count">19 more collaborating on notes</span>
+      </div>
+      <div class="hc-nudge">
+        <div class="hc-nudge-label">▲ Focus nudge</div>
+        <div class="hc-nudge-text">Halfway through — can you name one transport protein from memory?</div>
+      </div>
+      <div class="hc-cp">
+        <div class="hc-cp-q">Do you understand active vs passive transport?</div>
+        <div class="hc-cp-btns">
+          <button class="hc-cp-btn active">Got it</button>
+          <button class="hc-cp-btn">Kinda</button>
+          <button class="hc-cp-btn">Not yet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="demo-strip">
+  <div class="demo-strip-inner">
+    <div>
+      <h3>Try it right now</h3>
+      <p>Create a session or join one with a 6-digit code — no account needed.</p>
+    </div>
+    <div class="demo-btns">
+      <button class="demo-btn-create" onclick="openModal('create')">Create a session</button>
+      <button class="demo-btn-join" onclick="openModal('join')">Join with code</button>
+    </div>
+  </div>
+</div>
+
+<div class="how-bg" style="margin-top: 80px;">
+  <div class="how-inner">
+    <div class="section-tag fade-up">How it works</div>
+    <h2 class="section-h2 fade-up">Three steps to a<br><em>focused classroom.</em></h2>
+    <div class="steps">
+      <div class="step fade-up">
+        <div class="step-num">1</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0e0e0c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+        </div>
+        <div class="step-title">Teacher creates a session</div>
+        <div class="step-desc">Open AD-HD, name your class, and get a shareable 6-digit code in seconds. No signup required to start.</div>
+      </div>
+      <div class="step fade-up fade-up-d1">
+        <div class="step-num">2</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0e0e0c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87m-4-12a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="step-title">Students join instantly</div>
+        <div class="step-desc">Students enter the code on any device. They land in a shared live note editor alongside their peers.</div>
+      </div>
+      <div class="step fade-up fade-up-d2">
+        <div class="step-num">3</div>
+        <div class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0e0e0c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <div class="step-title">Operator sends nudges</div>
+        <div class="step-desc">Push summaries, clarity checkpoints, and gentle audio cues to keep every student anchored — without disrupting the flow.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="section-inner">
+    <div class="section-tag fade-up">Features</div>
+    <h2 class="section-h2 fade-up">Everything a distracted mind<br><em>actually needs.</em></h2>
+    <div class="features-grid" style="margin-top: 48px;">
+      <div class="feat-card fade-up">
+        <div class="feat-icon">📝</div>
+        <div class="feat-title">Live peer-driven notes</div>
+        <div class="feat-desc">All students write in a single shared document. Contributions appear instantly with peer attribution — no one falls behind alone.</div>
+      </div>
+      <div class="feat-card fade-up fade-up-d1">
+        <div class="feat-icon">✓</div>
+        <div class="feat-title">Active clarity checkpoints</div>
+        <div class="feat-desc">The teacher pushes micro-questions mid-lecture. Students respond in one tap. The operator sees who's lost — before they zone out entirely.</div>
+        <span class="feat-tag">Real-time feedback</span>
+      </div>
+      <div class="feat-card fade-up">
+        <div class="feat-icon">△</div>
+        <div class="feat-title">Manual engagement nudges</div>
+        <div class="feat-desc">Reorient, breathe, stretch, or quick-check nudges are sent by the instructor at any moment — with a gentle musical tone, not a jarring alert.</div>
+      </div>
+      <div class="feat-card fade-up fade-up-d1">
+        <div class="feat-icon">◎</div>
+        <div class="feat-title">Real audio, not noise</div>
+        <div class="feat-desc">Each nudge type plays a distinct, carefully tuned sine-wave tone — rising chime, arpeggio, low swell. Designed to redirect, not startle.</div>
+        <span class="feat-tag">ADHD-considered</span>
+      </div>
+      <div class="feat-card wide fade-up">
+        <div class="feat-icon">◷</div>
+        <div class="feat-title">Post-session efficacy survey</div>
+        <div class="feat-desc">Every session ends with a 3-question check-in. Did the nudges help without distracting you? How focused did you feel? We track the core assumption: can an interactive tool sustain attention without becoming a distraction itself?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top: 0;">
+  <div class="section-inner">
+    <div class="section-tag fade-up">Who it's for</div>
+    <h2 class="section-h2 fade-up">Designed for the students<br><em>classrooms forget.</em></h2>
+    <div class="who-grid">
+      <div class="who-card fade-up">
+        <div class="who-role">University student · ADHD</div>
+        <div class="who-quote">"I lose the thread 10 minutes in. Having a shared doc means I'm never starting from zero."</div>
+        <div class="who-name">— Early tester</div>
+      </div>
+      <div class="who-card fade-up fade-up-d1">
+        <div class="who-role">Lecturer · Large auditorium</div>
+        <div class="who-quote">"I can't see who's lost. The checkpoint data tells me in real time — before the exam does."</div>
+        <div class="who-name">— Professor</div>
+      </div>
+      <div class="who-card fade-up fade-up-d2">
+        <div class="who-role">Learning specialist</div>
+        <div class="who-quote">"Other tools add stimulation. AD-HD is the first one designed to reduce cognitive load while keeping students anchored."</div>
+        <div class="who-name">— Accessibility coordinator</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-section" id="waitlist">
+  <div class="cta-tag">Early access</div>
+  <h2 class="cta-h2">Be first in the room.<br><em>When it opens.</em></h2>
+  <p class="cta-sub">We're validating demand before building the full platform. Sign up and we'll reach out personally to run a session with your class.</p>
+
+  <div id="waitlist-form-wrap">
+    <form class="waitlist-form" onsubmit="submitWaitlist(event)">
+      <input class="wl-input" id="wl-name" type="text" placeholder="Your name" required>
+      <input class="wl-input" id="wl-email" type="email" placeholder="Your email" required>
+      <select class="wl-select" id="wl-role">
+        <option value="">I am a...</option>
+        <option value="teacher">Teacher / Lecturer</option>
+        <option value="student">Student</option>
+        <option value="specialist">Learning specialist</option>
+        <option value="other">Other</option>
+      </select>
+      <button class="wl-btn" type="submit">Get early access →</button>
+    </form>
+    <p class="cta-note">No spam. We'll email you at <a href="mailto:test@example.com">test@example.com</a> to schedule your pilot session.</p>
+  </div>
+
+  <div class="success-msg" id="waitlist-success">
+    <h3>You're on the list.</h3>
+    <p>We will reach out at <strong id="success-email"></strong> to set up your first session. Thank you for believing in this early.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">AD-HD</div>
+  <div class="footer-links">
+    <a href="mailto:test@example.com">Contact</a>
+    <a href="#waitlist">Join waitlist</a>
+    <a href="#" onclick="openModal('create'); return false;">Try demo</a>
+  </div>
+  <div class="footer-note">A student-built MVP</div>
+</footer>
+
+<div class="modal-overlay" id="modal-create">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Create a session</div>
+      <button class="modal-close" onclick="closeModal('create')">×</button>
+    </div>
+
+    <div class="modal-step active" id="create-step-1">
+      <div class="modal-label">Session name</div>
+      <input class="modal-input" id="create-name" type="text" placeholder="e.g. Biology 101 — Week 4">
+      <div class="modal-label">Your name</div>
+      <input class="modal-input" id="create-teacher" type="text" placeholder="e.g. Prof. Fagot">
+      <button class="modal-btn" onclick="generateSession()">Generate session code</button>
+    </div>
+
+    <div class="modal-step" id="create-step-2">
+      <div style="font-size: 14px; color: var(--ink3); margin-bottom: 8px;">Share this code with students</div>
+      <div class="code-display" id="session-code-display">—</div>
+      <div class="code-sub" id="session-name-display"></div>
+      <button class="modal-btn" onclick="copyCode()">Copy code</button>
+      <button class="modal-btn secondary" onclick="launchSession()">Open session as operator →</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-join">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Join a session</div>
+      <button class="modal-close" onclick="closeModal('join')">×</button>
+    </div>
+
+    <div class="modal-step active" id="join-step-1">
+      <div class="modal-label">Session code</div>
+      <input class="modal-input" id="join-code" type="text" placeholder="6-digit code" maxlength="6" style="text-transform:uppercase; letter-spacing: 0.1em; font-size: 20px;">
+      <div class="modal-hint">Ask your teacher for the session code</div>
+      <div class="modal-label">Your name</div>
+      <input class="modal-input" id="join-name" type="text" placeholder="e.g. Alex">
+      <button class="modal-btn" onclick="joinSession()">Join session</button>
+    </div>
+
+    <div class="modal-step" id="join-step-2">
+      <div style="text-align:center; padding: 8px 0 16px;">
+        <div style="font-size: 40px; margin-bottom: 12px;">✓</div>
+        <div style="font-family:'Instrument Serif',serif; font-size: 22px; margin-bottom: 8px;" id="join-confirm-text">Joined!</div>
+        <div style="font-size: 14px; color: var(--ink3); line-height: 1.6;" id="join-confirm-sub">You're in the session. The full collaborative tool opens in the next screen.</div>
+      </div>
+      <button class="modal-btn" onclick="launchStudentSession()">Open session as student →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── SCROLL ANIMATIONS ── */
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+/* ── MODALS ── */
+function openModal(type) {
+  document.getElementById('modal-' + type).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(type) {
+  document.getElementById('modal-' + type).classList.remove('open');
+  document.body.style.overflow = '';
+  // Reset steps
+  if (type === 'create') {
+    document.getElementById('create-step-1').classList.add('active');
+    document.getElementById('create-step-2').classList.remove('active');
+  }
+  if (type === 'join') {
+    document.getElementById('join-step-1').classList.add('active');
+    document.getElementById('join-step-2').classList.remove('active');
+  }
+}
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', function(e) {
+    if (e.target === this) {
+      const id = this.id.replace('modal-', '');
+      closeModal(id);
+    }
+  });
+});
+
+/* ── CREATE SESSION ── */
+let currentCode = '';
+function generateSession() {
+  const name = document.getElementById('create-name').value.trim() || 'My Session';
+  const teacher = document.getElementById('create-teacher').value.trim() || 'Instructor';
+  currentCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+  document.getElementById('session-code-display').textContent = currentCode;
+  document.getElementById('session-name-display').textContent = name + ' · ' + teacher;
+  document.getElementById('create-step-1').classList.remove('active');
+  document.getElementById('create-step-2').classList.add('active');
+}
+function copyCode() {
+  navigator.clipboard.writeText(currentCode).catch(() => {});
+  const btn = document.querySelector('#create-step-2 .modal-btn');
+  const orig = btn.textContent;
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = orig, 1800);
+}
+function launchSession() {
+  closeModal('create');
+  window.open('classroom.html', '_blank');
+}
+
+/* ── JOIN SESSION ── */
+let joinedCode = '';
+function joinSession() {
+  const code = document.getElementById('join-code').value.trim().toUpperCase();
+  const name = document.getElementById('join-name').value.trim() || 'Student';
+  if (code.length < 4) { document.getElementById('join-code').focus(); return; }
+  joinedCode = code;
+  // Use session storage to pass name to the classroom page
+  sessionStorage.setItem('adhd_username', name);
+  document.getElementById('join-confirm-text').textContent = 'Joined session ' + code;
+  document.getElementById('join-confirm-sub').textContent = 'Welcome, ' + name + '! You\'re now connected. The live collaborative tool will open next.';
+  document.getElementById('join-step-1').classList.remove('active');
+  document.getElementById('join-step-2').classList.add('active');
+}
+function launchStudentSession() {
+  closeModal('join');
+  window.open('classroom.html', '_blank');
+}
+
+/* ── WAITLIST ── */
+function submitWaitlist(e) {
+  e.preventDefault();
+  const name  = document.getElementById('wl-name').value.trim();
+  const email = document.getElementById('wl-email').value.trim();
+  const role  = document.getElementById('wl-role').value;
+
+  const subject = encodeURIComponent('AD-HD Waitlist — ' + name + ' (' + (role || 'user') + ')');
+  const body = encodeURIComponent(
+    'New waitlist signup:\n\nName: ' + name +
+    '\nEmail: ' + email +
+    '\nRole: ' + (role || 'not specified') +
+    '\n\nPlease reach out to schedule a pilot session.'
+  );
+  window.location.href = 'mailto:test@example.com?subject=' + subject + '&body=' + body;
+
+  document.getElementById('waitlist-form-wrap').style.display = 'none';
+  document.getElementById('success-email').textContent = email;
+  document.getElementById('waitlist-success').style.display = 'block';
+}
+</script>
+</body>
+</html>
