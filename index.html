@@ -708,6 +708,11 @@ function generateSession() {
   const name = document.getElementById('create-name').value.trim() || 'My Session';
   const teacher = document.getElementById('create-teacher').value.trim() || 'Instructor';
   currentCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+  
+  // Save room code and teacher name for the classroom
+  sessionStorage.setItem('adhd_room', currentCode);
+  sessionStorage.setItem('adhd_username', teacher);
+
   document.getElementById('session-code-display').textContent = currentCode;
   document.getElementById('session-name-display').textContent = name + ' · ' + teacher;
   document.getElementById('create-step-1').classList.remove('active');
@@ -732,8 +737,11 @@ function joinSession() {
   const name = document.getElementById('join-name').value.trim() || 'Student';
   if (code.length < 4) { document.getElementById('join-code').focus(); return; }
   joinedCode = code;
-  // Use session storage to pass name to the classroom page
+  
+  // Save room code and username for the classroom
+  sessionStorage.setItem('adhd_room', joinedCode);
   sessionStorage.setItem('adhd_username', name);
+
   document.getElementById('join-confirm-text').textContent = 'Joined session ' + code;
   document.getElementById('join-confirm-sub').textContent = 'Welcome, ' + name + '! You\'re now connected. The live collaborative tool will open next.';
   document.getElementById('join-step-1').classList.remove('active');

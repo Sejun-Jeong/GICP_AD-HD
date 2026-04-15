@@ -67,17 +67,11 @@
     cursor: pointer; font-family: inherit; font-weight: 500; transition: all 0.15s;
   }
   .vbtn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  .end-btn {
-    font-size: 12px; padding: 6px 12px; border-radius: 8px;
-    border: 1px solid var(--border-med); background: transparent;
-    color: var(--text-sec); cursor: pointer; font-family: inherit; font-weight: 500; transition: all 0.15s;
-  }
-  .end-btn:hover { background: var(--red-bg); color: var(--red-text); border-color: transparent; }
 
   /* ── LAYOUT ── */
   .main { display: flex; height: calc(100vh - 53px); overflow: hidden; }
 
-  /* ── LEFT PANE (NOTES + NUDGES) ── */
+  /* ── LEFT PANE (NOTES) ── */
   .left-pane { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--border); }
   .editor-col { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
   
@@ -111,7 +105,8 @@
   .chip-peer { background: #dbeafe; color: #1e40af; }
   .chip-op { background: var(--purple-bg); color: var(--purple-text); }
   
-  .peer-note-text { font-size: 13px; color: var(--text); line-height: 1.6; flex: 1; }
+  /* pre-wrap ensures linebreaks entered in the textarea are rendered correctly */
+  .peer-note-text { font-size: 13px; color: var(--text); line-height: 1.6; flex: 1; white-space: pre-wrap; }
   .peer-note-time { font-size: 10px; color: var(--text-ter); margin-top: 3px; }
   
   .note-compose {
@@ -131,35 +126,6 @@
     font-family: inherit; cursor: pointer; transition: all 0.15s; white-space: nowrap;
   }
   .note-send:hover { opacity: 0.85; }
-
-  /* ── NUDGE BAR (BOTTOM ROW) ── */
-  .nudge-bar-wrap {
-    flex-shrink: 0; border-top: 1px solid var(--border); background: var(--bg);
-    padding: 12px 20px; display: flex; flex-direction: column;
-  }
-  .nudge-header { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-ter); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-  .nudge-list {
-    display: flex; flex-direction: row; gap: 10px; overflow-x: auto; padding-bottom: 4px;
-  }
-  .nudge-item {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 10px 12px;
-    display: flex; align-items: flex-start; gap: 8px;
-    min-width: 240px; max-width: 280px; flex-shrink: 0;
-    animation: slide-in 0.35s ease;
-  }
-  .nudge-item.acked { opacity: 0.4; pointer-events: none; border-color: transparent; }
-  .nudge-icon { font-size: 15px; flex-shrink: 0; line-height: 1.4; }
-  .nudge-body { flex: 1; }
-  .nudge-text { font-size: 12px; color: var(--text); line-height: 1.5; }
-  .nudge-meta { font-size: 10px; color: var(--text-ter); margin-top: 3px; }
-  .nudge-ack {
-    font-size: 11px; padding: 3px 8px; border-radius: 10px;
-    border: 1px solid var(--border-med); background: transparent;
-    color: var(--text-sec); cursor: pointer; font-family: inherit;
-    white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
-  }
-  .nudge-ack:hover { background: var(--green-bg); color: var(--green-text); border-color: transparent; }
 
   /* Sound indicator */
   .sound-vis { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; opacity: 0; transition: opacity 0.2s; margin-left: 4px; vertical-align: middle; }
@@ -187,7 +153,8 @@
     border-radius: var(--radius-lg); padding: 14px;
     animation: slide-in 0.3s ease;
   }
-  .cp-q { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 12px; font-weight: 500; }
+  /* pre-wrap for checkpoints linebreaks */
+  .cp-q { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 12px; font-weight: 500; white-space: pre-wrap; }
   .cp-btns { display: flex; gap: 6px; flex-wrap: wrap; }
   .cp-btn {
     font-size: 12px; padding: 5px 12px; border-radius: 20px;
@@ -206,15 +173,7 @@
   .op-section { padding: 16px; border-bottom: 1px solid var(--border); }
   .op-head { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-ter); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
   .live-tag { font-size: 10px; background: var(--green-bg); color: var(--green-text); padding: 2px 7px; border-radius: 10px; text-transform: none; letter-spacing: 0; font-weight: 500; }
-  .nudge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .op-btn {
-    font-size: 12px; padding: 9px 10px; border-radius: var(--radius);
-    border: 1px solid var(--border-med); background: var(--surface);
-    color: var(--text); cursor: pointer; font-family: inherit;
-    font-weight: 500; display: flex; align-items: center; gap: 6px;
-    transition: all 0.15s; text-align: left;
-  }
-  .op-btn:hover { background: var(--surface2); border-color: var(--border-med); }
+  
   .summary-area {
     width: 100%; min-height: 80px; border: 1px solid var(--border);
     border-radius: var(--radius); padding: 10px 12px;
@@ -254,7 +213,12 @@
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo">AD-<span>HD</span></div>
-    <div class="session-pill"><div class="live-dot"></div> Live</div>
+    <div class="session-pill" id="room-display"><div class="live-dot"></div> Live</div>
+    <span class="sound-vis" id="sound-vis">
+      <span class="sv-bar" style="height:4px;"></span>
+      <span class="sv-bar" style="height:9px;"></span>
+      <span class="sv-bar" style="height:5px;"></span>
+    </span>
   </div>
   <div class="topbar-right">
     <div class="view-toggle">
@@ -279,47 +243,23 @@
         <button class="note-send" onclick="addMyNote()">Share</button>
       </div>
     </div>
-
-    <div class="nudge-bar-wrap">
-      <div class="nudge-header">
-        Focus nudges
-        <span class="sound-vis" id="sound-vis">
-          <span class="sv-bar" style="height:4px;"></span>
-          <span class="sv-bar" style="height:9px;"></span>
-          <span class="sv-bar" style="height:5px;"></span>
-        </span>
-      </div>
-      <div class="nudge-list" id="nudge-list">
-        </div>
-    </div>
   </div>
 
   <div class="side-col" id="student-side">
     <div class="side-header">Clarity Checkpoints</div>
-    <div class="cp-stream" id="cp-stream">
-      </div>
+    <div class="cp-stream" id="cp-stream"></div>
   </div>
 
   <div class="op-panel" id="op-panel">
     <div class="op-section">
-      <div class="op-head">Send nudge <span class="live-tag">Live</span></div>
-      <div class="nudge-grid">
-        <button class="op-btn" onclick="emitNudge('reorient')">▲ Reorient</button>
-        <button class="op-btn" onclick="emitNudge('breathe')">○ Breathe</button>
-        <button class="op-btn" onclick="emitNudge('question')">? Quick check</button>
-        <button class="op-btn" onclick="emitNudge('stretch')">↑ Stretch</button>
-      </div>
-    </div>
-
-    <div class="op-section">
-      <div class="op-head">Push summary</div>
-      <textarea class="summary-area" id="summary-input" placeholder="Type a summary..."></textarea>
+      <div class="op-head">Push summary <span class="live-tag">Live</span></div>
+      <textarea class="summary-area" id="summary-input" placeholder="Type a summary... (Ctrl+B for bold)"></textarea>
       <button class="push-btn" onclick="emitSummary()">Push to all students</button>
     </div>
 
     <div class="op-section">
-      <div class="op-head">Nudge new checkpoint</div>
-      <textarea class="summary-area" id="cp-input" style="min-height:54px;" placeholder="Use **text** for bold. Type a question..."></textarea>
+      <div class="op-head">New checkpoint</div>
+      <textarea class="summary-area" id="cp-input" style="min-height:54px;" placeholder="Type a question... (Ctrl+B for bold)"></textarea>
       <button class="push-btn" onclick="emitCheckpoint()" style="margin-top:0; background:var(--surface); color:var(--text); border:1px solid var(--border-med);">Push checkpoint</button>
     </div>
   </div>
@@ -329,12 +269,14 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  /* ── SOCKET SETUP ── */
-  // Graceful fallback if running HTML without Node server
+  /* ── SESSION & SOCKET SETUP ── */
   const socket = typeof io !== 'undefined' ? io() : { emit: ()=>{}, on: ()=>{} }; 
-  
-  // Retrieve username from SessionStorage or use "Student"
   const myUsername = sessionStorage.getItem('adhd_username') || 'Student';
+  const roomCode = sessionStorage.getItem('adhd_room') || 'GLOBAL';
+
+  // Join the isolated room and update UI
+  socket.emit('joinRoom', roomCode);
+  document.getElementById('room-display').innerHTML = `<div class="live-dot"></div> Room: ${roomCode}`;
 
   /* ── AUDIO ENGINE ── */
   let _ctx = null;
@@ -343,17 +285,6 @@
     const v = document.getElementById('sound-vis');
     v.classList.add('playing');
     setTimeout(() => v.classList.remove('playing'), ms);
-  }
-  function playNudge() {
-    const c = ctx(), t = c.currentTime;
-    [[523.25, t], [659.25, t + 0.13]].forEach(([f, s]) => {
-      const o = c.createOscillator(), g = c.createGain();
-      o.connect(g); g.connect(c.destination);
-      o.type = 'sine'; o.frequency.value = f;
-      g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(0.15, s + 0.03);
-      g.gain.linearRampToValueAtTime(0, s + 0.32); o.start(s); o.stop(s + 0.35);
-    });
-    flashVis(900);
   }
   function playAck() {
     const c = ctx(), t = c.currentTime;
@@ -386,15 +317,6 @@
       g.gain.linearRampToValueAtTime(0, s + 0.22); o.start(s); o.stop(s + 0.25);
     });
   }
-  function playBreathe() {
-    const c = ctx(), t = c.currentTime;
-    const o = c.createOscillator(), g = c.createGain();
-    o.connect(g); g.connect(c.destination);
-    o.type = 'sine'; o.frequency.value = 220;
-    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.12, t + 0.8);
-    g.gain.linearRampToValueAtTime(0, t + 2.0); o.start(t); o.stop(t + 2.1);
-    flashVis(2200);
-  }
 
   function toast(msg) {
     const el = document.getElementById('toast');
@@ -409,14 +331,39 @@
     document.getElementById('op-panel').classList.toggle('visible', v === 'operator');
   }
 
+  /* ── BOLD / MARKDOWN HELPER ── */
+  function parseMarkdown(text) {
+    // Basic markdown parsing for bolding
+    return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+  }
+
+  // Allow Ctrl+B / Cmd+B in text areas to wrap selected text in ** **
+  function handleFormatting(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+      e.preventDefault();
+      const start = this.selectionStart;
+      const end = this.selectionEnd;
+      const selected = this.value.substring(start, end);
+      const before = this.value.substring(0, start);
+      const after = this.value.substring(end);
+      
+      this.value = before + '**' + selected + '**' + after;
+      // Reselect the text inside the asterisks
+      this.setSelectionRange(start + 2, start + 2 + selected.length);
+    }
+  }
+
+  document.getElementById('summary-input').addEventListener('keydown', handleFormatting);
+  document.getElementById('cp-input').addEventListener('keydown', handleFormatting);
+
   /* ── CONTRIBUTIONS (NOTES) ── */
   function addMyNote() {
     const input = document.getElementById('note-input');
     const txt = input.value.trim();
     if (!txt) return;
     
-    // Broadcast via socket
     socket.emit('newNote', {
+      room: roomCode,
       sender: myUsername,
       text: txt,
       isOp: false,
@@ -424,7 +371,6 @@
     });
 
     input.value = '';
-    input.style.height = 'auto';
     playAck();
   }
 
@@ -434,6 +380,7 @@
     if (!txt) return;
     
     socket.emit('newNote', {
+      room: roomCode,
       sender: 'Summary',
       text: txt,
       isOp: true,
@@ -452,6 +399,9 @@
     let noteClass = data.isOp ? 'op' : (isMe ? 'me' : 'peer');
     let chipClass = data.isOp ? 'chip-op' : (isMe ? 'chip-me' : 'chip-peer');
     let displayName = isMe ? 'Me' : data.sender;
+    
+    // Parse Markdown before injecting
+    let formattedText = parseMarkdown(data.text);
 
     el.className = `peer-note ${noteClass}`;
     el.innerHTML = `
@@ -460,66 +410,18 @@
           <span class="peer-chip ${chipClass}">${displayName}</span>
           <span class="peer-note-time">${data.time}</span>
         </div>
-        <div class="peer-note-text">${data.text}</div>
+        <div class="peer-note-text">${formattedText}</div>
       </div>
     `;
     
-    // Prepend to top
     stream.prepend(el);
     stream.scrollTop = 0;
-    
     if (data.isOp) playSummary();
   });
 
-  // Enter to send
   document.getElementById('note-input').addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addMyNote(); }
   });
-
-  /* ── NUDGES ── */
-  const NUDGE_TEMPLATES = {
-    reorient: { icon: '▲', text: 'Take a breath and re-focus — where were we in the lesson?' },
-    breathe:  { icon: '○', text: 'Pause. Take 3 slow breaths before we continue.' },
-    question: { icon: '?', text: 'Quick check: what does ATP do in active transport?' },
-    stretch:  { icon: '↑', text: 'Roll your shoulders back and sit up tall for a moment.' },
-  };
-  let nudgeCounter = 0;
-
-  function emitNudge(type) {
-    socket.emit('newNudge', { type });
-    toast('Nudge sent');
-  }
-
-  socket.on('newNudge', (data) => {
-    nudgeCounter++;
-    const { icon, text } = NUDGE_TEMPLATES[data.type];
-    const list = document.getElementById('nudge-list');
-    const el = document.createElement('div');
-    el.className = 'nudge-item';
-    el.id = 'nudge-' + nudgeCounter;
-    
-    el.innerHTML = `
-      <span class="nudge-icon">${icon}</span>
-      <div class="nudge-body">
-        <div class="nudge-text">${text}</div>
-        <div class="nudge-meta">just now · from instructor</div>
-      </div>
-      <button class="nudge-ack" onclick="ackNudge(${nudgeCounter})">Got it</button>
-    `;
-    
-    // Append horizontally
-    list.appendChild(el);
-    // Scroll to the newest nudge
-    list.scrollLeft = list.scrollWidth;
-
-    data.type === 'breathe' ? playBreathe() : playNudge();
-  });
-
-  window.ackNudge = function(id) {
-    const el = document.getElementById('nudge-' + id);
-    if (el) el.classList.add('acked');
-    playAck();
-  }
 
   /* ── CHECKPOINTS ── */
   let cpCounter = 0;
@@ -528,7 +430,7 @@
     const txt = input.value.trim();
     if (!txt) return;
     
-    socket.emit('newCheckpoint', { text: txt });
+    socket.emit('newCheckpoint', { room: roomCode, text: txt });
     input.value = '';
     toast('Checkpoint pushed');
   }
@@ -539,10 +441,8 @@
     const el = document.createElement('div');
     el.className = 'cp-card';
     
-    // Parse Markdown Bold and Line Breaks
-    let formattedText = data.text
-      .replace(/\n/g, '<br>')
-      .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    // Parse Markdown Bold
+    let formattedText = parseMarkdown(data.text);
 
     el.innerHTML = `
       <div class="cp-q">${formattedText}</div>
@@ -553,7 +453,6 @@
       </div>
     `;
     
-    // Prepend to show latest on top
     stream.prepend(el);
     stream.scrollTop = 0;
     playCheckpoint();

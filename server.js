@@ -7,28 +7,28 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Serve the static HTML files in the current directory
 app.use(express.static(path.join(__dirname)));
 
-// Route for the landing page
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Single global room for the MVP (broadcasts to all connected users)
 io.on('connection', (socket) => {
     console.log('A user connected');
 
+    // 1. Listen for users joining a specific room
+    socket.on('joinRoom', (roomCode) => {
+        socket.join(roomCode);
+        console.log(`User joined room: ${roomCode}`);
+    });
+
+    // 2. Broadcast only to the specific room
     socket.on('newNote', (data) => {
-        io.emit('newNote', data);
+        io.to(data.room).emit('newNote', data);
     });
 
     socket.on('newCheckpoint', (data) => {
-        io.emit('newCheckpoint', data);
-    });
-
-    socket.on('newNudge', (data) => {
-        io.emit('newNudge', data);
+        io.to(data.room).emit('newCheckpoint', data);
     });
 
     socket.on('disconnect', () => {
