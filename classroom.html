@@ -190,6 +190,44 @@
   }
   .push-btn:hover { opacity: 0.88; }
 
+  .response-stream {
+    display: flex; flex-direction: column; gap: 10px;
+    max-height: 280px; overflow-y: auto;
+  }
+  .response-empty {
+    border: 1px dashed var(--border-med); border-radius: var(--radius);
+    padding: 12px; color: var(--text-ter); font-size: 12px; line-height: 1.5;
+    background: var(--surface);
+  }
+  .op-response-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px; animation: slide-in 0.3s ease;
+  }
+  .op-response-meta {
+    font-size: 10px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-ter); margin-bottom: 6px;
+  }
+  .op-response-q {
+    font-size: 12px; line-height: 1.5; color: var(--text);
+    font-weight: 500; white-space: pre-wrap; margin-bottom: 10px;
+  }
+  .op-response-list { display: flex; flex-direction: column; gap: 6px; }
+  .op-response-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    background: var(--surface2); border-radius: 8px; padding: 7px 8px;
+  }
+  .op-response-student {
+    min-width: 0; color: var(--text-sec); font-size: 12px; font-weight: 500;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .response-chip {
+    flex-shrink: 0; font-size: 11px; font-weight: 500;
+    border-radius: 20px; padding: 3px 8px;
+  }
+  .response-chip.yes { background: var(--green-bg); color: var(--green-text); }
+  .response-chip.kinda { background: var(--amber-bg); color: var(--amber-text); }
+  .response-chip.no { background: var(--red-bg); color: var(--red-text); }
+
   /* ── TOAST ── */
   .toast {
     position: fixed; bottom: 24px; left: 50%;
@@ -262,6 +300,13 @@
       <textarea class="summary-area" id="cp-input" style="min-height:54px;" placeholder="Type a question... (Ctrl+B for bold)"></textarea>
       <button class="push-btn" onclick="emitCheckpoint()" style="margin-top:0; background:var(--surface); color:var(--text); border:1px solid var(--border-med);">Push checkpoint</button>
     </div>
+
+    <div class="op-section">
+      <div class="op-head">Checkpoint responses <span class="live-tag" id="response-count">0</span></div>
+      <div class="response-stream" id="checkpoint-response-stream">
+        <div class="response-empty">No checkpoint responses yet.</div>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -273,6 +318,11 @@
   const socket = typeof io !== 'undefined' ? io() : { emit: ()=>{}, on: ()=>{} }; 
   const myUsername = sessionStorage.getItem('adhd_username') || 'Student';
   const roomCode = sessionStorage.getItem('adhd_room') || 'GLOBAL';
+  let clientId = sessionStorage.getItem('adhd_client_id');
+  if (!clientId) {
+    clientId = `client-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+    sessionStorage.setItem('adhd_client_id', clientId);
+  }
 
   // Join the isolated room and update UI
   socket.emit('joinRoom', roomCode);
@@ -332,9 +382,18 @@
   }
 
   /* ── BOLD / MARKDOWN HELPER ── */
+  function escapeHtml(text) {
+    return String(text).replace(/[&<>"']/g, char => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[char]));
+  }
+
   function parseMarkdown(text) {
-    // Basic markdown parsing for bolding
-    return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    return escapeHtml(text).replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
   }
 
   // Allow Ctrl+B / Cmd+B in text areas to wrap selected text in ** **
@@ -425,18 +484,34 @@
 
   /* ── CHECKPOINTS ── */
   let cpCounter = 0;
+  const localCheckpointIds = {};
+  const checkpointsById = {};
+  const checkpointResponses = {};
+
+  function makeCheckpointId() {
+    return `cp-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  }
   function emitCheckpoint() {
     const input = document.getElementById('cp-input');
     const txt = input.value.trim();
     if (!txt) return;
     
-    socket.emit('newCheckpoint', { room: roomCode, text: txt });
+    socket.emit('newCheckpoint', { room: roomCode, id: makeCheckpointId(), text: txt });
     input.value = '';
     toast('Checkpoint pushed');
   }
 
   socket.on('newCheckpoint', (data) => {
     cpCounter++;
+    const checkpointId = data.id || `legacy-${cpCounter}`;
+    const checkpoint = {
+      id: checkpointId,
+      number: cpCounter,
+      text: data.text
+    };
+    localCheckpointIds[cpCounter] = checkpointId;
+    checkpointsById[checkpointId] = checkpoint;
+
     const stream = document.getElementById('cp-stream');
     const el = document.createElement('div');
     el.className = 'cp-card';
@@ -462,10 +537,108 @@
     document.getElementById(`cp-${id}-yes`).className   = 'cp-btn' + (ans === 'yes'   ? ' sel-yes'   : '');
     document.getElementById(`cp-${id}-kinda`).className = 'cp-btn' + (ans === 'kinda' ? ' sel-kinda' : '');
     document.getElementById(`cp-${id}-no`).className    = 'cp-btn' + (ans === 'no'    ? ' sel-no'    : '');
+
+    const checkpoint = checkpointsById[localCheckpointIds[id]];
+    if (checkpoint) {
+      socket.emit('checkpointResponse', {
+        room: roomCode,
+        checkpointId: checkpoint.id,
+        checkpointNumber: checkpoint.number,
+        checkpointText: checkpoint.text,
+        clientId,
+        sender: myUsername,
+        answer: ans,
+        time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+      });
+    }
+
     playAck();
     const msgs = { yes: 'Great — keep going!', kinda: 'Noted — watch for a clarification nudge.', no: 'Flagged — instructor has been notified.' };
     toast(msgs[ans]);
   }
+
+  function answerLabel(ans) {
+    return { yes: 'Got it', kinda: 'Kinda', no: 'Not yet' }[ans] || ans;
+  }
+
+  function renderCheckpointResponses() {
+    const stream = document.getElementById('checkpoint-response-stream');
+    const responseCount = document.getElementById('response-count');
+    const groups = Object.values(checkpointResponses).sort((a, b) => b.lastAt - a.lastAt);
+    const totalResponses = groups.reduce((sum, group) => sum + Object.keys(group.responses).length, 0);
+    responseCount.textContent = totalResponses;
+
+    if (!groups.length) {
+      stream.innerHTML = '<div class="response-empty">No checkpoint responses yet.</div>';
+      return;
+    }
+
+    stream.innerHTML = '';
+    groups.forEach(group => {
+      const card = document.createElement('div');
+      card.className = 'op-response-card';
+
+      const meta = document.createElement('div');
+      meta.className = 'op-response-meta';
+      meta.textContent = `Checkpoint ${group.number}`;
+      card.appendChild(meta);
+
+      const question = document.createElement('div');
+      question.className = 'op-response-q';
+      question.innerHTML = parseMarkdown(group.text);
+      card.appendChild(question);
+
+      const list = document.createElement('div');
+      list.className = 'op-response-list';
+
+      Object.values(group.responses)
+        .sort((a, b) => b.receivedAt - a.receivedAt)
+        .forEach(response => {
+          const row = document.createElement('div');
+          row.className = 'op-response-row';
+
+          const student = document.createElement('div');
+          student.className = 'op-response-student';
+          student.textContent = response.sender;
+
+          const chip = document.createElement('div');
+          chip.className = `response-chip ${response.answer}`;
+          chip.textContent = answerLabel(response.answer);
+          chip.title = response.time;
+
+          row.appendChild(student);
+          row.appendChild(chip);
+          list.appendChild(row);
+        });
+
+      card.appendChild(list);
+      stream.appendChild(card);
+    });
+  }
+
+  socket.on('checkpointResponse', (data) => {
+    const checkpointId = data.checkpointId || `legacy-${data.checkpointText || 'checkpoint'}`;
+    const knownCheckpoint = checkpointsById[checkpointId];
+    const group = checkpointResponses[checkpointId] || {
+      number: knownCheckpoint ? knownCheckpoint.number : (data.checkpointNumber || Object.keys(checkpointResponses).length + 1),
+      text: knownCheckpoint ? knownCheckpoint.text : (data.checkpointText || 'Checkpoint'),
+      responses: {},
+      lastAt: Date.now()
+    };
+
+    group.number = knownCheckpoint ? knownCheckpoint.number : (data.checkpointNumber || group.number);
+    group.text = knownCheckpoint ? knownCheckpoint.text : (data.checkpointText || group.text);
+    group.lastAt = Date.now();
+    group.responses[data.clientId || data.sender || 'Student'] = {
+      sender: data.sender || 'Student',
+      answer: data.answer,
+      time: data.time || '',
+      receivedAt: Date.now()
+    };
+
+    checkpointResponses[checkpointId] = group;
+    renderCheckpointResponses();
+  });
 </script>
 </body>
 </html>

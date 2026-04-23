@@ -31,6 +31,10 @@ io.on('connection', (socket) => {
         io.to(data.room).emit('newCheckpoint', data);
     });
 
+    socket.on('checkpointResponse', (data) => {
+        io.to(data.room).emit('checkpointResponse', data);
+    });
+
     socket.on('disconnect', () => {
         console.log('User disconnected');
     });
